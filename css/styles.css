@@ -218,3 +218,15 @@ body {
         margin-bottom: 10px;
     }
 }
+
+.Boton-jugar {
+    background-color: #ffcb05;
+    color: #3d7dca;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}   
