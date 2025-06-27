@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="logo">
+                        <img src="img/Pokemon logo.png" 
+                             alt="Pokémon Logo" class="pokemon-logo">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="generation-selector ms-auto">
+                        <select class="form-select" id="generationSelect">
+                            <option value="1">Primera Generación (1-151)</option>
+                            <option value="2">Segunda Generación (152-251)</option>
+                            <option value="3">Tercera Generación (252-386)</option>
+                            <option value="4">Cuarta Generación (387-493)</option>
+                            <option value="5">Quinta Generación (494-649)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <div class="mt-3">Cargando Pokémon...</div>
+    </div>
+
+    <!-- Pokemon Grid -->
+    <div class="container-fluid">
+        <div id="pokemonGrid" class="pokemon-grid"></div>
+    </div>
+
+    <!-- Pokemon Detail Modal -->
+    <div class="modal fade" id="pokemonModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pokemonModalTitle">Detalles del Pokémon</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="pokemonModalBody">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
