@@ -8,16 +8,38 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="../img/Pokemon logo.png" 
+                     alt="Pokémon Logo" class="pokemon-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Pokédex</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="entrenadores.html">Entrenadores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="equipos.html">Equipos</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <!-- Header -->
     <div class="header">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <div class="logo">
-                        <img src="img/Pokemon logo.png" 
-                             alt="Pokémon Logo" class="pokemon-logo">
-                    <a href="https://play.pokemonshowdown.com/" target="_blank"><button class="Boton-jugar">Jugar</button></a>
-                    </div>
+                    <h2 class="page-title">Pokédex</h2>
                 </div>
                 <div class="col-md-6">
                     <div class="generation-selector ms-auto">
@@ -63,6 +85,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="js/database.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>

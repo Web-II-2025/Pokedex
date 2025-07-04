@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenadores - Pokédex</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    
+    <!-- Menu de navegacion -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="../img/Pokemon logo.png" 
+                     alt="Pokémon Logo" class="pokemon-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Pokédex</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="entrenadores.html">Entrenadores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="equipos.html">Equipos</a>
+                    </li>
+                </ul>   
+            </div>
+        </div>
+    </nav>
+
+    <!-- Botón para agregar entrenador -->
+    <div class="container">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8 text-center">
+                <button class="btn btn-primary" onclick="toggleForm()">
+                    <i class="fas fa-plus"></i> Agregar Entrenador
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario para agregsar entrenador -->
+    <div class="container" id="formContainer" style="display: none;">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8">
+                <div class="form-container">
+                    <h3 class="text-center mb-4">Nuevo Entrenador</h3>
+                    <form id="trainerForm">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre y Apellidos</label>
+                            <input type="text" class="form-control" id="nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sexo" class="form-label">Sexo</label>
+                            <select class="form-select" id="sexo" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="residencia" class="form-label">Lugar de Residencia</label>
+                            <input type="text" class="form-control" id="residencia" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="foto" class="form-label">URL de la Foto</label>
+                            <input type="url" class="form-control" id="foto" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Guardar Entrenador
+                            </button>
+                            <button type="button" class="btn btn-secondary ms-2" onclick="toggleForm()">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de entrenadores -->
+    <div class="container">
+        <div id="trainersGrid" class="cards-grid"></div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let db;
+
+        // IndexedDB
+        function initDB() {
+            const request = indexedDB.open('PokemonDB', 1);
+            
+            request.onerror = function(event) {
+                console.error('Error al abrir la base de datos');
+            };
+            
+            request.onsuccess = function(event) {
+                db = event.target.result;
+                loadTrainers();
+            };
+            
+            request.onupgradeneeded = function(event) {
+                db = event.target.result;
+                
+                // Crear tabla de entrenadores
+                if (!db.objectStoreNames.contains('trainers')) {
+                    const trainerStore = db.createObjectStore('trainers', { keyPath: 'id', autoIncrement: true });
+                    trainerStore.createIndex('nombre', 'nombre', { unique: false });
+                }
+                
+                // Crear tabla de equipos
+                if (!db.objectStoreNames.contains('teams')) {
+                    const teamStore = db.createObjectStore('teams', { keyPath: 'id', autoIncrement: true });
+                    teamStore.createIndex('nombre', 'nombre', { unique: false });
+                }
+            };
+        }
+
+        // formulario
+        function toggleForm() {
+            const formContainer = document.getElementById('formContainer');
+            formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+            
+            if (formContainer.style.display === 'block') {
+                document.getElementById('trainerForm').reset();
+            }
+        }
+
+        // Guardar entrenador
+        function saveTrainer(trainer) {
+            const transaction = db.transaction(['trainers'], 'readwrite');
+            const store = transaction.objectStore('trainers');
+            
+            const request = store.add(trainer);
+            
+            request.onsuccess = function() {
+                loadTrainers();
+                toggleForm();
+                alert('Entrenador guardado exitosamente');
+            };
+            
+            request.onerror = function() {
+                alert('Error al guardar el entrenador');
+            };
+        }
+
+        // Cargar entrenadores
+        function loadTrainers() {
+            const transaction = db.transaction(['trainers'], 'readonly');
+            const store = transaction.objectStore('trainers');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                displayTrainers(request.result);
+            };
+        }
+
+        // Mostrar entrenadores
+        function displayTrainers(trainers) {
+            const grid = document.getElementById('trainersGrid');
+            grid.innerHTML = '';
+            
+            if (trainers.length === 0) {
+                grid.innerHTML = '<div class="text-center text-white"><h3>No hay entrenadores registrados</h3></div>';
+                return;
+            }
+            
+            trainers.forEach(trainer => {
+                const card = document.createElement('div');
+                card.className = 'trainer-card';
+                card.innerHTML = `
+                    <div class="text-center">
+                        <img src="${trainer.foto}" alt="${trainer.nombre}" class="trainer-photo" onerror="this.src='https://via.placeholder.com/80x80?text=No+Image'">
+                        <div class="trainer-name">${trainer.nombre}</div>
+                        <div class="trainer-info">
+                            <div><strong>Sexo:</strong> ${trainer.sexo}</div>
+                            <div><strong>Residencia:</strong> ${trainer.residencia}</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Manejar envio del formulario
+        document.getElementById('trainerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const trainer = {
+                nombre: document.getElementById('nombre').value,
+                sexo: document.getElementById('sexo').value,
+                residencia: document.getElementById('residencia').value,
+                foto: document.getElementById('foto').value
+            };
+            
+            saveTrainer(trainer);
+        });
+
+        // Inicializar la aplicacion
+        document.addEventListener('DOMContentLoaded', function() {
+            initDB();
+        });
+    </script>
+</body>
+</html>

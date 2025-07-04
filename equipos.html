@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipos - Pokédex</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    
+    <!-- Se crea el menu de navegacion -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="../img/Pokemon logo.png" 
+                     alt="Pokémon Logo" class="pokemon-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Pokédex</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="entrenadores.html">Entrenadores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="equipos.html">Equipos</a>
+                    </li>
+                </ul>   
+            </div>
+        </div>
+    </nav>
+
+    <!-- Boton para asignar los ewquipos -->
+    <div class="container">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8 text-center">
+                <button class="btn btn-primary" onclick="toggleForm()">
+                    <i class="fas fa-plus"></i> Crear Equipo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario para crear equipo -->
+    <div class="container" id="formContainer" style="display: none;">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-10">
+                <div class="form-container">
+                    <h3 class="text-center mb-4">Nuevo Equipo</h3>
+                    <form id="teamForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="nombreEquipo" class="form-label">Nombre del Equipo</label>
+                                    <input type="text" class="form-control" id="nombreEquipo" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="imagenEquipo" class="form-label">URL de la Imagen</label>
+                                    <input type="url" class="form-control" id="imagenEquipo" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="entrenador" class="form-label">Entrenador</label>
+                            <select class="form-select" id="entrenador" required>
+                                <option value="">Seleccionar entrenador...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Pokémon del Equipo (máximo 6)</label>
+                            <div class="row" id="pokemonSelection">
+                                <!-- Pokémon selectors will be generated here -->
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Crear Equipo
+                            </button>
+                            <button type="button" class="btn btn-secondary ms-2" onclick="toggleForm()">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de los equipos creados -->
+    <div class="container">
+        <div id="teamsGrid" class="cards-grid"></div>
+    </div>
+
+    <!-- un Modal para ver detalles del equipo -->
+    <div class="modal fade" id="teamModal" tabindex="-1" aria-labelledby="teamModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="teamModalLabel">Detalles del Equipo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="teamModalContent">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let db;
+        let availablePokemons = [];
+
+        // Inicializar IndexedDB
+        function initDB() {
+            const request = indexedDB.open('PokemonDB', 1);
+            
+            request.onerror = function(event) {
+                console.error('Error al abrir la base de datos');
+            };
+            
+            request.onsuccess = function(event) {
+                db = event.target.result;
+                loadTrainers();
+                loadTeams();
+                loadPokemons();
+            };
+            
+            request.onupgradeneeded = function(event) {
+                db = event.target.result;
+                
+                if (!db.objectStoreNames.contains('trainers')) {
+                    const trainerStore = db.createObjectStore('trainers', { keyPath: 'id', autoIncrement: true });
+                    trainerStore.createIndex('nombre', 'nombre', { unique: false });
+                }
+                
+                if (!db.objectStoreNames.contains('teams')) {
+                    const teamStore = db.createObjectStore('teams', { keyPath: 'id', autoIncrement: true });
+                    teamStore.createIndex('nombre', 'nombre', { unique: false });
+                }
+            };
+        }
+
+        // Cargar algunos Pokémon desde la API
+        async function loadPokemons() {
+            try {
+                const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151');
+                const data = await response.json();
+                availablePokemons = data.results;
+                createPokemonSelectors();
+            } catch (error) {
+                console.error('Error loading Pokémon:', error);
+            }
+        }
+
+        // Crear selectores de Pokémon
+        function createPokemonSelectors() {
+            const container = document.getElementById('pokemonSelection');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 6; i++) {
+                const col = document.createElement('div');
+                col.className = 'col-md-4 mb-3';
+                col.innerHTML = `
+                    <select class="form-select pokemon-select" id="pokemon${i}">
+                        <option value="">Pokémon ${i} (opcional)</option>
+                        ${availablePokemons.map(pokemon => 
+                            `<option value="${pokemon.name}">${pokemon.name}</option>`
+                        ).join('')}
+                    </select>
+                `;
+                container.appendChild(col);
+            }
+        }
+
+        // Cargar entrenadores
+        function loadTrainers() {
+            const transaction = db.transaction(['trainers'], 'readonly');
+            const store = transaction.objectStore('trainers');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                const select = document.getElementById('entrenador');
+                select.innerHTML = '<option value="">Seleccionar entrenador...</option>';
+                
+                request.result.forEach(trainer => {
+                    const option = document.createElement('option');
+                    option.value = trainer.id;
+                    option.textContent = trainer.nombre;
+                    select.appendChild(option);
+                });
+            };
+        }
+
+        // Alternar formulario
+        function toggleForm() {
+            const formContainer = document.getElementById('formContainer');
+            formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+            
+            if (formContainer.style.display === 'block') {
+                document.getElementById('teamForm').reset();
+                loadTrainers();
+            }
+        }
+
+        // Guardar equipo
+        function saveTeam(team) {
+            const transaction = db.transaction(['teams'], 'readwrite');
+            const store = transaction.objectStore('teams');
+            
+            const request = store.add(team);
+            
+            request.onsuccess = function() {
+                loadTeams();
+                toggleForm();
+                alert('Equipo creado exitosamente');
+            };
+            
+            request.onerror = function() {
+                alert('Error al crear el equipo');
+            };
+        }
+
+        // Cargar equipos
+        function loadTeams() {
+            const transaction = db.transaction(['teams'], 'readonly');
+            const store = transaction.objectStore('teams');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                displayTeams(request.result);
+            };
+        }
+
+        // Mostrar equipos
+        function displayTeams(teams) {
+            const grid = document.getElementById('teamsGrid');
+            grid.innerHTML = '';
+            
+            if (teams.length === 0) {
+                grid.innerHTML = '<div class="text-center text-white"><h3>No hay equipos registrados</h3></div>';
+                return;
+            }
+            
+            teams.forEach(team => {
+                const card = document.createElement('div');
+                card.className = 'team-card';
+                card.onclick = () => showTeamDetails(team);
+                card.innerHTML = `
+                    <div class="text-center">
+                        <img src="${team.imagen}" alt="${team.nombre}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;" onerror="this.src='https://via.placeholder.com/100x100?text=No+Image'">
+                        <div class="trainer-name">${team.nombre}</div>
+                        <div class="trainer-info">
+                            <div><strong>Pokémon:</strong> ${team.pokemon.filter(p => p).length}</div>
+                            <div><small class="click-details">Click para ver detalles</small></div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Detalles del equipo
+        async function showTeamDetails(team) {
+            const modal = new bootstrap.Modal(document.getElementById('teamModal'));
+            const modalContent = document.getElementById('teamModalContent');
+            
+            // Obtener datos del entrenador
+            const trainerTransaction = db.transaction(['trainers'], 'readonly');
+            const trainerStore = trainerTransaction.objectStore('trainers');
+            const trainerRequest = trainerStore.get(team.entrenadorId);
+            
+            trainerRequest.onsuccess = async function() {
+                const trainer = trainerRequest.result;
+                
+                // Obtener datos de los Pokemon
+                const pokemonData = [];
+                for (const pokemonName of team.pokemon) {
+                    if (pokemonName) {
+                        try {
+                            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+                            const data = await response.json();
+                            pokemonData.push(data);
+                        } catch (error) {
+                            console.error('Error loading Pokémon data:', error);
+                        }
+                    }
+                }
+                
+                modalContent.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <img src="${team.imagen}" alt="${team.nombre}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 15px; margin-bottom: 1rem;">
+                            <h4>${team.nombre}</h4>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="detail-section">
+                                <div class="detail-title">
+                                    <i class="fas fa-user"></i> Entrenador
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="${trainer.foto}" alt="${trainer.nombre}" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 1rem;">
+                                    <div>
+                                        <div><strong>${trainer.nombre}</strong></div>
+                                        <div><small>${trainer.sexo} - ${trainer.residencia}</small></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <div class="detail-title">
+                                    <i class="fas fa-dragon"></i> Pokémon del Equipo
+                                </div>
+                                <div class="row">
+                                    ${pokemonData.map(pokemon => `
+                                        <div class="col-md-6 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${pokemon.id.toString().padStart(3, '0')}.png" 
+                                                     alt="${pokemon.name}" 
+                                                     style="width: 40px; height: 40px; margin-right: 10px;"
+                                                     onerror="this.src='https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/${pokemon.name}.png'">
+                                                <div>
+                                                    <div><strong>${pokemon.name}</strong></div>
+                                                    <div><small>#${pokemon.id.toString().padStart(3, '0')}</small></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                modal.show();
+            };
+        }
+
+        // Envioo del formulario
+        document.getElementById('teamForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const pokemon = [];
+            for (let i = 1; i <= 6; i++) {
+                const pokemonSelect = document.getElementById(`pokemon${i}`);
+                if (pokemonSelect.value) {
+                    pokemon.push(pokemonSelect.value);
+                }
+            }
+            
+            if (pokemon.length === 0) {
+                alert('Debe seleccionar al menos un Pokémon');
+                return;
+            }
+            
+            const team = {
+                nombre: document.getElementById('nombreEquipo').value,
+                imagen: document.getElementById('imagenEquipo').value,
+                entrenadorId: parseInt(document.getElementById('entrenador').value),
+                pokemon: pokemon
+            };
+            
+            saveTeam(team);
+        });
+
+        // Inicializar la aplicacion
+        document.addEventListener('DOMContentLoaded', function() {
+            initDB();
+        });
+    </script>
+</body>
+</html>

@@ -1,11 +1,34 @@
-/* General Styles */
 body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     font-family: 'Arial', sans-serif;
 }
 
-/* Header Styles */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand .pokemon-logo {
+    height: 40px;
+    width: auto;
+}
+
+.nav-link {
+    font-weight: 500;
+}
+
+.nav-link.active {
+    color: #3742fa !important;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #3742fa;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    margin: 0;
+}
+
 .header {
     background: rgba(255, 255, 255, 0.95);
     padding: 20px 0;
@@ -29,7 +52,6 @@ body {
     max-width: 300px;
 }
 
-/* Pokemon Grid */
 .pokemon-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -75,7 +97,6 @@ body {
     margin-top: 5px;
 }
 
-/* Loading */
 .loading {
     text-align: center;
     padding: 50px;
@@ -83,7 +104,6 @@ body {
     font-size: 1.2rem;
 }
 
-/* Modal Styles */
 .modal-content {
     border-radius: 15px;
     border: none;
@@ -110,7 +130,6 @@ body {
     color: #333;
 }
 
-/* Badges */
 .type-badge {
     display: inline-block;
     padding: 5px 15px;
@@ -160,28 +179,201 @@ body {
 .type-steel { background-color: #B8B8D0; }
 .type-fairy { background-color: #EE99AC; }
 
-/* Responsive Design */
+.form-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.form-title {
+    color: #3742fa;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 30px;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.trainer-card, .team-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.trainer-card:hover, .team-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.trainer-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #3742fa;
+}
+
+.team-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.pokemon-team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.pokemon-team-item {
+    text-align: center;
+}
+
+.pokemon-team-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.05);
+    padding: 5px;
+}
+
+.pokemon-team-item .pokemon-name {
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.add-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.pokemon-selector {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+}
+
+.pokemon-option {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pokemon-option:hover {
+    background: #e9ecef;
+}
+
+.pokemon-option img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.pokemon-option.selected {
+    background: #3742fa;
+    color: white;
+}
+
+.selected-pokemon {
+    background: #e3f2fd;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.selected-pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.selected-pokemon-item {
+    text-align: center;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    position: relative;
+}
+
+.selected-pokemon-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.remove-pokemon {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .pokemon-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 15px;
         padding: 15px;
     }
-    
     .pokemon-card {
         padding: 15px;
     }
-    
     .pokemon-image {
         width: 80px;
         height: 80px;
     }
-    
     .pokemon-logo {
         height: 45px;
         max-width: 180px;
     }
-    
     .header {
         padding: 15px 0;
     }
@@ -191,42 +383,30 @@ body {
     .pokemon-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
     .modal-dialog {
         margin: 10px;
     }
-    
     .pokemon-detail-image {
         width: 120px;
         height: 120px;
     }
-    
     .pokemon-logo {
         height: 35px;
         max-width: 150px;
     }
-    
     .generation-selector {
         margin-top: 10px;
     }
-    
     .header .row {
         text-align: center;
     }
-    
     .header .col-md-6 {
         margin-bottom: 10px;
     }
 }
 
-.Boton-jugar {
-    background-color: #ffcb05;
-    color: #3d7dca;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
+.click-details {
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}   
+    color: #007bff;
+    text-decoration: underline;
+}
