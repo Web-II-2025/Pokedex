@@ -8,37 +8,47 @@
     <link rel="stylesheet" href="css/styles.css">
 
     <style>
-        .dev-badge {
-            font-size: 0.9rem;
-            background: #f8f9fa;
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid #dedede;
-            color: #333;
-            font-weight: 500;
-            margin-left: 15px;
+        /* Ajustes estéticos del traductor para que no se vea feo */
+        #google_translate_element select {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 4px 6px;
+            font-size: 14px;
         }
 
-        .dev-badge:hover {
-            background: #e9ecef;
+        .goog-logo-link {
+            display: none !important;
+        }
+
+        .goog-te-gadget {
+            font-size: 0 !important;
+        }
+
+        .goog-te-combo {
+            font-size: 14px !important;
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="index.html">
                 <img src="../img/Pokemon logo.png" 
                      alt="Pokémon Logo" class="pokemon-logo">
             </a>
 
+            <span class="ms-3 fw-bold text-primary">
+                Desarrollado por Ahian Danier Quesada
+            </span>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="index.html">Pokédex</a>
                     </li>
@@ -49,10 +59,10 @@
                         <a class="nav-link" href="equipos.html">Equipos</a>
                     </li>
 
-                    <!-- Badge de autor -->
-                    <span class="dev-badge">
-                        Desarrollado por <strong>Ahian Danier Quesada</strong>
-                    </span>
+                    <!-- Google Translate Button -->
+                    <li class="nav-item d-flex align-items-center ms-3">
+                        <div id="google_translate_element"></div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -101,13 +111,29 @@
                     <h5 class="modal-title" id="pokemonModalTitle">Detalles del Pokémon</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="pokemonModalBody"></div>
+                <div class="modal-body" id="pokemonModalBody">
+                    <!-- Content will be loaded dynamically -->
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Google Translate Script -->
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'es',
+                includedLanguages: 'en,es,fr,de,it,pt,ja,zh-CN',
+                layout: google.translate.TranslateElement.InlineLayout.VERTICAL
+            }, 'google_translate_element');
+        }
+    </script>
+
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="js/database.js"></script>
     <script src="js/script.js"></script>
+
 </body>
 </html>
