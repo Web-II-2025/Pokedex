@@ -6,20 +6,39 @@
     <title>Pokédex</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+        .dev-badge {
+            font-size: 0.9rem;
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid #dedede;
+            color: #333;
+            font-weight: 500;
+            margin-left: 15px;
+        }
+
+        .dev-badge:hover {
+            background: #e9ecef;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="index.html">
                 <img src="../img/Pokemon logo.png" 
                      alt="Pokémon Logo" class="pokemon-logo">
             </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link active" href="index.html">Pokédex</a>
                     </li>
@@ -29,6 +48,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="equipos.html">Equipos</a>
                     </li>
+
+                    <!-- Badge de autor -->
+                    <span class="dev-badge">
+                        Desarrollado por <strong>Ahian Danier Quesada</strong>
+                    </span>
                 </ul>
             </div>
         </div>
@@ -77,9 +101,7 @@
                     <h5 class="modal-title" id="pokemonModalTitle">Detalles del Pokémon</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="pokemonModalBody">
-                    <!-- Content will be loaded dynamically -->
-                </div>
+                <div class="modal-body" id="pokemonModalBody"></div>
             </div>
         </div>
     </div>
